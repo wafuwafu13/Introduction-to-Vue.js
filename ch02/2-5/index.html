@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://unpkg.com/vue@2.5.17"></script>
+</head>
+
+<body>
+    <div id="app">
+        <p>
+            {{ items[0].name }}
+        </p>
+        <!-- 属性の展開 -->
+        <button v-bind:disabled="!canBuy">購入</button>
+    </div>
+    <script>
+        var items = [
+            {
+                name: '鉛筆', price: 300, quantity: 0
+            }, {
+                name: 'ノート', price: 400, quantity: 0
+            }, {
+                name: '消しゴム', price: 500, quantity: 0
+            }
+        ];
+        // 複数のVueインスタンスがコミュニケーションをする必要が出てきたときに変数に代入
+        var vm = new Vue({
+            el: '#app', // マウント対象 影響範囲はその子孫まで　遅延的に追加される場合は vm.$mount(el)
+            data: { // dataプロパティ　データそのもののみを置く
+                items: items,
+                canBuy: false
+            }
+        });
+
+        // console
+        console.log(vm.items) // items: Array(3)
+
+        vm.$watch(function () {
+            // 鉛筆の個数
+            return this.items[0].quantity
+        }, function (quantity) {
+            // このコールバックは鉛筆の個数が変更されたら呼ばれる
+            console.log(quantity )
+        })
+    </script>
+</body>
+
+</html>
+
