@@ -144,7 +144,7 @@
         var filteredUsers = userData.filter(function (user) {
           return user.id === parseInt(userId, 10)
         })
-        callback(null, filteredUsers && filteredUsers[0]) // よく分からない
+        callback(null, filteredUsers && filteredUsers[0]) // 検索結果が0件の時は[]ではなく null/undefined を返す
       }, 1000)
     }
 
