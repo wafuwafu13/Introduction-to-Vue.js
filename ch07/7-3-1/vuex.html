@@ -1,0 +1,108 @@
+<script src="https://unpkg.com/vue@latest"></script>
+<script src="https://unpkg.com/vuex@latest"></script>
+
+
+<script>
+
+    function getCountNum (type) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                let amount
+                switch (type) {
+                    case 'one':
+                        amount = 1
+                        break
+                    case 'two':
+                        amount = 2
+                        break
+                    case 'ten':
+                        amount = 10
+                        break
+                    default:
+                        amount = 0
+                }
+                resolve({ amount })
+            }, 1000)
+        })
+    }
+    // ストアの作成 アプリケーション全体で使用されるデータをストア内で管理
+    const store = new Vuex.Store({
+
+        // ステート
+        state: {
+            count: 10
+        },
+
+        // ミューテーション 非同期処理は行わない
+        mutations: {
+            // increment (state, amount) {
+            //     state.count += amount
+            // }
+            increment (state, payload) {
+                state.count = state.count + payload.amount
+            }
+            // increment (state) {
+            //     state.count = state.count + 1
+            // }
+        },
+
+        // アクション
+        actions: {
+            // incrementAction (ctx) {
+            //     // incrementミューテーションを実行する
+            //     ctx.commit('increment')
+            // }
+
+            incrementAsync ({commit}, payload) {
+                // 非同期にデータを取得する
+                return getCountNum(payload.type)
+                  .then(data => {
+                      console.log(data) // {amount: 1}
+                      commit('increment', {
+                          amount: data.amount
+                      })
+                  })
+            }
+        },
+
+        // gettersオプションでゲッターを定義する
+        getters: {
+            // ステートから別の値を計算する
+            squared: (state) => state.count * state.count,
+            // 他のゲッターの値を使うことも可能
+            cubed: (state, getters) => state.count * getters.squared
+
+        }
+    })
+
+    // ステートを参照
+    // console.log(store.state.count) // 10
+
+    // ミューテーションを実行し、ステートを更新
+    // store.commit('increment', 1)
+
+    // ステートの更新を確認
+    // console.log(store.state.count) // 11
+
+    // store.commit('increment', { amount: 5})
+    // console.log(store.state.count) // 15
+
+    // store.gettersでゲッターを参照する
+    // console.log(store.getters.cubed) // 1000
+
+    // store.dispathでアクションを呼び出す
+    // store.dispatch('incrementAction')
+    // console.log(store.state.count) // 11
+
+    // store.dispatch('incrementAsync', { type: 'one'})
+    // console.log(store.state.count) // 10
+
+
+    store.dispatch('incrementAsync', { type: 'one'}).then(() => {
+        // アクションの処理が完了した後に実行される
+        console.log(store.state.count) // 11
+    })
+
+
+    
+</script>
